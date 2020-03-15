@@ -85,6 +85,27 @@ public class Riproduzione {
  		return null;
  	}
 	
+	public Brano previous() {
+		List<Brano> listaBrani = getListaBrani();
+		Brano branoInRiproduzione = this.getBrano();
+		this.brano = precedenteBrano(listaBrani, branoInRiproduzione);
+
+		return this.brano;
+	}
+	
+	private Brano precedenteBrano(List<Brano> listaBrani, Brano branoInRiproduzione) {
+		for (int i = 0; i < listaBrani.size(); i++) {
+			if (listaBrani.get(i).getId() == branoInRiproduzione.getId()) {
+				if (i == 0) {
+					return listaBrani.get(listaBrani.size() - 1);
+				}
+				Brano precedenteBrano = listaBrani.get((i - 1));
+				return precedenteBrano;
+			}
+		}
+		return null;
+	}
+ 	
 	private List<Brano> getListaBrani() {
  		if (album != null && playlist != null) {
  			return null;

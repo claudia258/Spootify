@@ -21,6 +21,14 @@ public class RiproduzioneServiceImpl implements RiproduzioneService{
 	@Autowired
 	private RiproduzioneRepository riproduzioneRepository;
 	
+	@Autowired
+	private UtenteService utenteSerivce;
+	
+	@Autowired
+	private AlbumService albumService;
+	@Autowired
+	private PlaylistService playlistService; 
+	
 	@Override
 	public List<Riproduzione> listAll() {
 		return (List<Riproduzione>)riproduzioneRepository.findAll();
@@ -64,5 +72,59 @@ public class RiproduzioneServiceImpl implements RiproduzioneService{
 		}
 			return entityManager.createQuery(q, Riproduzione.class).getResultList();
 	}
-
+	@Override
+	public Riproduzione prossimoBrano(Long idRaccolta, Long idUtente, boolean album) {
+		Riproduzione riproduzione = null;
+		
+		if(album)
+			riproduzione = riproduzioneRepository.findRiproduzioneUtenteAlbum(idRaccolta, idUtente);
+		else
+			riproduzione = riproduzioneRepository.findRiproduzioneUtentePlaylist(idRaccolta, idUtente);
+		
+		if(riproduzione != null) {
+			riproduzione.next();
+			aggiorna(riproduzione);
+			return riproduzione;
+		}
+		
+		Riproduzione creaRiproduzione = new Riproduzione();
+		creaRiproduzione.setUtenteInAscolto(utenteSerivce.caricaConId(idUtente));
+		if(album) {
+			creaRiproduzione.setAlbum(albumService.caricaConId(idRaccolta));
+			creaRiproduzione.setBrano(creaRiproduzione.getAlbum().getPrimoBrano());
+		}else {
+			creaRiproduzione.setPlaylist(playlistService.caricaConId(idRaccolta));
+			creaRiproduzione.setBrano(creaRiproduzione.getPlaylist().getPrimoBrano());
+		}
+		
+		return riproduzioneRepository.save(creaRiproduzione);
+	}
+		
+	@Override
+	public Riproduzione branoPrecendente(Long idRaccolta, Long idUtente, boolean album) {
+		Riproduzione riproduzione = null;
+		
+		if(album)
+			riproduzione = riproduzioneRepository.findRiproduzioneUtenteAlbum(idRaccolta, idUtente);
+		else
+			riproduzione = riproduzioneRepository.findRiproduzioneUtentePlaylist(idRaccolta, idUtente);
+		
+		if(riproduzione != null) {
+			riproduzione.previous();
+			aggiorna(riproduzione);
+			return riproduzione;
+		}
+		
+		Riproduzione creaRiproduzione = new Riproduzione();
+		creaRiproduzione.setUtenteInAscolto(utenteSerivce.caricaConId(idUtente));
+		if(album) {
+			creaRiproduzione.setAlbum(albumService.caricaConId(idRaccolta));
+			creaRiproduzione.setBrano(creaRiproduzione.getAlbum().getPrimoBrano());
+		}else {
+			creaRiproduzione.setPlaylist(playlistService.caricaConId(idRaccolta));
+			creaRiproduzione.setBrano(creaRiproduzione.getPlaylist().getPrimoBrano());
+		}
+		
+		return riproduzioneRepository.save(creaRiproduzione);
+	}	
 }
