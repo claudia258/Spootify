@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.spootify.Spootify.dto.AlbumDTO;
+import it.spootify.Spootify.dto.RiproduzioneDTO;
 import it.spootify.Spootify.model.Album;
 import it.spootify.Spootify.service.AlbumService;
 
@@ -23,6 +24,9 @@ public class AlbumController {
 
 	@Autowired
 	private AlbumService albumService;
+	
+	@Autowired
+	private RiproduzioneController riproduzioneController;
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<AlbumDTO> getAlbum (@PathVariable(value = "id") Long id){
@@ -67,5 +71,16 @@ public class AlbumController {
 		List<AlbumDTO> listalbumDTO = AlbumDTO.buildListAlbumDTOFromModel(albumService.cercaPerEsempio(album));
 		return ResponseEntity.ok(listalbumDTO);
 	}
+	
+	@PostMapping("/{id}/play")
+	public ResponseEntity<RiproduzioneDTO> play(@PathVariable(value = "id") Long id) {
+		return riproduzioneController.playnext(id, true);
+	}
+
+	@PostMapping("/{id}/playPrevious")
+	public ResponseEntity<RiproduzioneDTO> playPrevious(@PathVariable(value = "id") Long id) {
+		return riproduzioneController.playprevius(id, true);
+	}
+	
 	
 }

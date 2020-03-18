@@ -14,5 +14,7 @@ public interface RiproduzioneRepository extends CrudRepository<Riproduzione, Lon
 
  	@Query("from Riproduzione r left join fetch r.album a left join fetch a.brani where r.album.id = ?1 and r.utenteInAscolto.id = ?2")
  	Riproduzione findRiproduzioneUtenteAlbum(Long idAlbum, Long idUtente);
+ 	
+ 	
 
 }

@@ -30,7 +30,7 @@ import it.spootify.Spootify.utility.DataUtils;
 public class FiltroAdmin implements Filter{
 	
 	private static final String HOME_PATH = "";
-	private static final String[] EXCLUDED_URLS = {"/login"};
+	private static final String[] EXCLUDED_URLS = {"/login", "index.html" ,"/css" , "/js"};
 	private static final String[] PROTECTED_URLS = {"/admin/"};
 
 	@Autowired

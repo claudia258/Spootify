@@ -4,11 +4,15 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import it.spootify.Spootify.model.Album;
+import it.spootify.Spootify.model.Playlist;
 import it.spootify.Spootify.model.Riproduzione;
+import it.spootify.Spootify.model.Utente;
 import it.spootify.Spootify.repository.RiproduzioneRepository;
 import it.spootify.Spootify.utility.StringUtils;
 
@@ -22,12 +26,15 @@ public class RiproduzioneServiceImpl implements RiproduzioneService{
 	private RiproduzioneRepository riproduzioneRepository;
 	
 	@Autowired
-	private UtenteService utenteSerivce;
+	private UtenteService utenteService;
 	
 	@Autowired
 	private AlbumService albumService;
 	@Autowired
-	private PlaylistService playlistService; 
+	private PlaylistService playlistService;
+	
+	@Autowired
+	private HttpServletRequest http;
 	
 	@Override
 	public List<Riproduzione> listAll() {
@@ -88,7 +95,7 @@ public class RiproduzioneServiceImpl implements RiproduzioneService{
 		}
 		
 		Riproduzione creaRiproduzione = new Riproduzione();
-		creaRiproduzione.setUtenteInAscolto(utenteSerivce.caricaConId(idUtente));
+		creaRiproduzione.setUtenteInAscolto(utenteService.caricaConId(idUtente));
 		if(album) {
 			creaRiproduzione.setAlbum(albumService.caricaConId(idRaccolta));
 			creaRiproduzione.setBrano(creaRiproduzione.getAlbum().getPrimoBrano());
@@ -116,7 +123,7 @@ public class RiproduzioneServiceImpl implements RiproduzioneService{
 		}
 		
 		Riproduzione creaRiproduzione = new Riproduzione();
-		creaRiproduzione.setUtenteInAscolto(utenteSerivce.caricaConId(idUtente));
+		creaRiproduzione.setUtenteInAscolto(utenteService.caricaConId(idUtente));
 		if(album) {
 			creaRiproduzione.setAlbum(albumService.caricaConId(idRaccolta));
 			creaRiproduzione.setBrano(creaRiproduzione.getAlbum().getPrimoBrano());
@@ -126,5 +133,51 @@ public class RiproduzioneServiceImpl implements RiproduzioneService{
 		}
 		
 		return riproduzioneRepository.save(creaRiproduzione);
-	}	
+	}
+	
+	@Override
+	public Riproduzione caricaRiproduzioneIdUtente(Long idRaccolta, Long idUtente, boolean album) {
+		Riproduzione riproduzionePersist = null;
+		if (album) {
+			riproduzionePersist = riproduzioneRepository.findRiproduzioneUtenteAlbum(idRaccolta, idUtente);
+					
+		} else {
+			riproduzionePersist = riproduzioneRepository.findRiproduzioneUtentePlaylist(idRaccolta, idUtente);
+					
+		}
+
+		return riproduzionePersist;
+	}
+	
+	@Override
+	public Riproduzione caricaRiproduzioneCodiceSessione(Long idRaccolta, String codiceSessione, boolean album) {
+		Utente utenteInSessione = utenteService.caricaUtenteInSessione(http.getHeader("codiceSessione"));
+		Riproduzione riproduzioneAttiva = caricaRiproduzioneIdUtente(idRaccolta, utenteInSessione.getId(), album);;
+		if(riproduzioneAttiva != null) {
+			return riproduzioneAttiva;
+		}
+		
+		return creaRiproduzione(idRaccolta, utenteInSessione.getId(), album);
+	}
+	
+	@Override
+	public Riproduzione creaRiproduzione(Long idRaccolta, Long idUtente, boolean album) {
+		Riproduzione nuovaRiproduzione = new Riproduzione();
+		nuovaRiproduzione.setUtenteInAscolto(utenteService.caricaConId(idUtente));
+		if (album) {
+			Album albumInRiproduzione = albumService.caricaSingoloEager(idRaccolta);
+			nuovaRiproduzione.setAlbum(albumInRiproduzione);
+			nuovaRiproduzione.setBrano(albumInRiproduzione.getPrimoBrano());
+		} else {
+			Playlist playlistInRiproduzione = playlistService.caricaSingoloEager(idRaccolta);
+			nuovaRiproduzione.setPlaylist(playlistInRiproduzione);
+			nuovaRiproduzione.setBrano(playlistInRiproduzione.getPrimoBrano());
+		}
+
+		inserisci(nuovaRiproduzione);
+		
+		return nuovaRiproduzione;
+	}
+
+	
 }

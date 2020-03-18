@@ -54,7 +54,7 @@ public class BranoDTO {
 		Brano brano = new Brano();
 		brano.setId(branoDTO.getId());
 		brano.setTraccia(branoDTO.getTraccia());
-		brano.setAlbum(AlbumDTO.buildAlbumModelFromDTO(branoDTO.getAlbum(), false, false));
+		brano.setAlbum(AlbumDTO.buildAlbumModelFromDTO(branoDTO.getAlbum(), true, false));
 		
 		return brano;
 	}
@@ -62,7 +62,7 @@ public class BranoDTO {
 		BranoDTO branoDTO = new BranoDTO();
 		branoDTO.setId(brano.getId());
 		branoDTO.setTraccia(brano.getTraccia());
-		branoDTO.setAlbum(AlbumDTO.buildAlbumDTOFromModel(brano.getAlbum(), false, false));
+		branoDTO.setAlbum(AlbumDTO.buildAlbumDTOFromModel(brano.getAlbum(), true, false));
 	
 		return branoDTO;
 	}

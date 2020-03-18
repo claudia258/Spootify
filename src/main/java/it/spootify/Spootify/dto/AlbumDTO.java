@@ -80,7 +80,7 @@ public class AlbumDTO {
 		album.setGenere(albumDTO.getGenere());
 		album.setDataUscita(albumDTO.getDataUscita());
 		if(autore)
-			album.setAutore(ArtistaDTO.buildArtistaModelFromDTO(albumDTO.getAutore(), false));
+			album.setAutore(ArtistaDTO.buildArtistaModelFromDTO(albumDTO.getAutore(), true));
 		if(brani)
 			album.setBrani(BranoDTO.buildListBraniModelFromDTO(albumDTO.getBraniDTO()));
 		return album;
@@ -93,7 +93,7 @@ public class AlbumDTO {
 		albumDTO.setGenere(album.getGenere());
 		albumDTO.setDataUscita(album.getDataUscita());
 		if(autore)
-			albumDTO.setAutore(ArtistaDTO.buildArtistaDTOFromModel(album.getAutore(), false));
+			albumDTO.setAutore(ArtistaDTO.buildArtistaDTOFromModel(album.getAutore(), true));
 		if(brani)
 			albumDTO.setBraniDTO(BranoDTO.buildListBraniDTOFromModel(album.getBrani()));
 		

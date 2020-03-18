@@ -2,6 +2,8 @@ package it.spootify.Spootify.rest.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.spootify.Spootify.dto.PlaylistDTO;
+import it.spootify.Spootify.dto.RiproduzioneDTO;
 import it.spootify.Spootify.model.Playlist;
+import it.spootify.Spootify.model.Utente;
 import it.spootify.Spootify.service.PlaylistService;
+import it.spootify.Spootify.service.UtenteService;
 
 @RestController
 @RequestMapping(value = "/playlist")
@@ -23,6 +28,15 @@ public class PlaylistController {
 
 	@Autowired
 	private PlaylistService playlistService;
+	
+	@Autowired
+	private RiproduzioneController riproduzioneController;
+	
+	@Autowired
+	private UtenteService utenteService;
+	
+	@Autowired
+	private HttpServletRequest httpServletRequest;
 
 	@GetMapping("/{id}")
 	public ResponseEntity<PlaylistDTO> getPlaylist(@PathVariable(value = "id") Long id) {
@@ -62,5 +76,25 @@ public class PlaylistController {
 		Playlist playlistModel = PlaylistDTO.buildPlaylistModelFromDTO(playlistDTO, false);
 		List<PlaylistDTO> playlistDto = PlaylistDTO.buildListBranoDTOFromModel(playlistService.cercaPerEsempio(playlistModel));
 		return ResponseEntity.ok(playlistDto);
+	}
+	
+	@GetMapping("/utente")
+	public ResponseEntity<List<PlaylistDTO>> listAllMyPlaylist() {
+		
+		Utente utenteInSessione = utenteService.caricaUtenteInSessione(httpServletRequest.getHeader("codiceSessione"));
+		List<Playlist> resultModel = playlistService.findPlaylistByUtente(utenteInSessione.getId());
+		List<PlaylistDTO> resultDTO = PlaylistDTO.buildListBranoDTOFromModel(resultModel);
+
+		return ResponseEntity.ok(resultDTO);
+	}
+	
+	@PostMapping("/{id}/play")
+	public ResponseEntity<RiproduzioneDTO> play(@PathVariable(value = "id") Long id) {
+		return riproduzioneController.playnext(id, false);
+	}
+
+	@PostMapping("/{id}/playPrevious")
+	public ResponseEntity<RiproduzioneDTO> playPrevious(@PathVariable(value = "id") Long id) {
+		return riproduzioneController.playprevius(id, false);
 	}
 }

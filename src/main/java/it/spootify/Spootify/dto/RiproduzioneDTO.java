@@ -4,7 +4,7 @@ import it.spootify.Spootify.model.Riproduzione;
 
 public class RiproduzioneDTO {
 	
-	public Long id;
+	public Long idRiproduzione;
 	public UtenteLoginDTO utenteInAscolto;
 	private PlaylistDTO playlist;
 	private AlbumDTO album;
@@ -15,11 +15,11 @@ public class RiproduzioneDTO {
 	}
 
 	public Long getId() {
-		return id;
+		return idRiproduzione;
 	}
 
 	public void setId(Long id) {
-		this.id = id;
+		this.idRiproduzione = id;
 	}
 
 	public UtenteLoginDTO getUtenteInAscolto() {
@@ -59,9 +59,9 @@ public class RiproduzioneDTO {
 		riproduzione.setId(riproduzioneDTO.getId());
 		riproduzione.setUtenteInAscolto(UtenteLoginDTO.buildUtenteModelFromDTO(riproduzioneDTO.getUtenteInAscolto()));
 		if(riproduzioneDTO.getAlbum() != null)
-		riproduzione.setAlbum(AlbumDTO.buildAlbumModelFromDTO(riproduzioneDTO.getAlbum(), false, false));
+		riproduzione.setAlbum(AlbumDTO.buildAlbumModelFromDTO(riproduzioneDTO.getAlbum(), true, true));
 		if(riproduzioneDTO.getPlaylist() != null)
-		riproduzione.setPlaylist(PlaylistDTO.buildPlaylistModelFromDTO(riproduzioneDTO.getPlaylist(), false));
+		riproduzione.setPlaylist(PlaylistDTO.buildPlaylistModelFromDTO(riproduzioneDTO.getPlaylist(), true));
 		riproduzione.setBrano(BranoDTO.buildBranoModelFromFTO(riproduzioneDTO.getBrano()));
 	
 		return riproduzione;
@@ -71,9 +71,9 @@ public class RiproduzioneDTO {
 		riproduzioneDTO.setId(riproduzione.getId());
 		riproduzioneDTO.setUtenteInAscolto(UtenteLoginDTO.buildUtenteDTOFromModel(riproduzione.getUtenteInAscolto()));
 		if(riproduzione.getAlbum() != null)
-		riproduzioneDTO.setAlbum(AlbumDTO.buildAlbumDTOFromModel(riproduzione.getAlbum(), false, false));
+		riproduzioneDTO.setAlbum(AlbumDTO.buildAlbumDTOFromModel(riproduzione.getAlbum(), true, true));
 		if(riproduzione.getPlaylist() != null)
-		riproduzioneDTO.setPlaylist(PlaylistDTO.buildPlaylistDTOFromModel(riproduzione.getPlaylist(), false));
+		riproduzioneDTO.setPlaylist(PlaylistDTO.buildPlaylistDTOFromModel(riproduzione.getPlaylist(), true));
 		riproduzioneDTO.setBrano(BranoDTO.buildBranoDTOFromModel(riproduzione.getBrano()));
 		
 		return riproduzioneDTO;

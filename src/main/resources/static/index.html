@@ -1,10 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+<meta http-equiv="Content-Type" content="text/html;"
+	charset="ISO-8859-1">
+<title>Spootify</title>
+
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap.bundle.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/js/riproduzione.js"></script>
+
 </head>
 <body>
+	<div class="container">
+
+
+		<div class="page-header">
+			<h3>Spootify</h3>
+		</div>
+		<form id="riproduzione" class="form-horizontal"
+			onSubmit="return riproduci()">
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="codiceSessioneInputId">Codice
+					Sessione:</label>
+				<div class="col-sm-4">
+					<input class="form-control" type="text" id="codiceSessioneInputId"
+						name="codiceSessione">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="idPlaylistInputId">Id
+					Playlist:</label>
+				<div class="col-sm-4">
+					<input class="form-control" type="text" id="idPlaylistInputId"
+						name="idPlaylist">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="idAlbumInputId">Id
+					Album:</label>
+				<div class="col-sm-4">
+					<input class="form-control" type="text" id="idAlbumInputId"
+						name="idAlbum">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary btn-md">Riproduci
+					</button>
+				</div>
+			</div>
+		</form>
+
+		<table class="table table-striped" id="musicaInRiproduzione">
+			<thead>
+			</thead>
+
+
+			<tbody>
+			</tbody>
+		</table>
+
+
+		<div class="btn-group" id="comandiRiproduzione" style="display: none">
+			<p>
+				<button onclick="cambiaBrano(false)" class="btn btn-sm btn-info "
+					type="submit">Previous</button>
+			</p>
+			<p>
+				<button onclick="cancellaRiproduzione()"
+					class="btn btn-sm btn-info " type="submit">Cancella
+					Riproduzione</button>
+			</p>
+			<p>
+				<button onclick="indietro()" class="btn btn-sm btn-info "
+					type="submit">Indietro</button>
+			</p>
+			<p>
+				<button onclick="cambiaBrano(true)" class="btn btn-sm btn-info "
+					type="submit">Next</button>
+			</p>
+		</div>
+	</div>
 
 </body>
 </html>
+

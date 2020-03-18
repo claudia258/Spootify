@@ -3,11 +3,13 @@ package it.spootify.Spootify.rest.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 
 import it.spootify.Spootify.dto.UtenteLoginDTO;
 import it.spootify.Spootify.model.Sessione;
@@ -25,6 +27,12 @@ public class LoginController {
 	
 	@Autowired
 	private SessioneService sessioneService;
+	
+	@GetMapping
+	public ModelAndView goHome() {
+		return new ModelAndView("index.html");
+	}
+	
 	
 	@PostMapping
 	public ResponseEntity<UtenteLoginDTO> login(@RequestBody UtenteLoginDTO utenteDTO){

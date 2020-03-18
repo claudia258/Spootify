@@ -46,6 +46,11 @@ public class PlaylistServiceImpl implements PlaylistService{
 		playlistRepository.delete(instance);
 		
 	}
+	
+	@Override
+	public Playlist caricaSingoloEager(Long id) {
+		return playlistRepository.caricaPlaylistEager(id);
+	}
 
 	@Override
 	public List<Playlist> cercaPerEsempio(Playlist example) {
@@ -57,6 +62,11 @@ public class PlaylistServiceImpl implements PlaylistService{
 			q+= "and u.username like '%"+example.getCreatore().getUsername()+"%'";
 		}
 		return entityManager.createQuery(q, Playlist.class).getResultList();
+	}
+	
+	@Override
+	public List<Playlist> findPlaylistByUtente(Long id){
+		return playlistRepository.findAllPlaylistsByUtenteId(id);
 	}
 	
 
