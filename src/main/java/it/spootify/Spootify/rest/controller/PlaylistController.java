@@ -20,6 +20,7 @@ import it.spootify.Spootify.dto.RiproduzioneDTO;
 import it.spootify.Spootify.model.Playlist;
 import it.spootify.Spootify.model.Utente;
 import it.spootify.Spootify.service.PlaylistService;
+import it.spootify.Spootify.service.RiproduzioneService;
 import it.spootify.Spootify.service.UtenteService;
 
 @RestController
@@ -30,7 +31,7 @@ public class PlaylistController {
 	private PlaylistService playlistService;
 	
 	@Autowired
-	private RiproduzioneController riproduzioneController;
+	private RiproduzioneService riproduzioneService;	
 	
 	@Autowired
 	private UtenteService utenteService;
@@ -90,11 +91,11 @@ public class PlaylistController {
 	
 	@PostMapping("/{id}/play")
 	public ResponseEntity<RiproduzioneDTO> play(@PathVariable(value = "id") Long id) {
-		return riproduzioneController.playnext(id, false);
+		return riproduzioneService.playnext(id, false);
 	}
 
 	@PostMapping("/{id}/playPrevious")
 	public ResponseEntity<RiproduzioneDTO> playPrevious(@PathVariable(value = "id") Long id) {
-		return riproduzioneController.playprevius(id, false);
+		return riproduzioneService.playprevius(id, false);
 	}
 }

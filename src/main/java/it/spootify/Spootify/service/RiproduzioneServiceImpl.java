@@ -7,8 +7,12 @@ import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import it.spootify.Spootify.dto.RiproduzioneDTO;
 import it.spootify.Spootify.model.Album;
 import it.spootify.Spootify.model.Playlist;
 import it.spootify.Spootify.model.Riproduzione;
@@ -178,6 +182,43 @@ public class RiproduzioneServiceImpl implements RiproduzioneService{
 		
 		return nuovaRiproduzione;
 	}
+	@Override
+	public ResponseEntity<RiproduzioneDTO> playnext(Long idRaccolta, boolean isAlbum) {
+		Utente utenteInAscolto = utenteService.caricaUtenteInSessione(http.getHeader("codiceSessione"));
+		RiproduzioneNotFound(idRaccolta, isAlbum);
+		Riproduzione riproduzioneAggiornata = this.prossimoBrano(idRaccolta, utenteInAscolto.getId(),
+				isAlbum);
+		return ResponseEntity.ok(RiproduzioneDTO.buildRiproduzioneDTOFromModel(riproduzioneAggiornata));
+	}
 
+	@Override
+	public ResponseEntity<RiproduzioneDTO> playprevius(Long idRaccolta, boolean isAlbum) {
+		Utente utenteInAscolto = utenteService.caricaUtenteInSessione(http.getHeader("codiceSessione"));
+		RiproduzioneNotFound(idRaccolta, isAlbum);
+		Riproduzione riproduzioneAggiornata = this.branoPrecendente(idRaccolta, utenteInAscolto.getId(),
+				isAlbum);
+		return ResponseEntity.ok(RiproduzioneDTO.buildRiproduzioneDTOFromModel(riproduzioneAggiornata));
+	}
+	
+	private void RiproduzioneNotFound(Long idRaccolta, boolean isAlbum) {
+		if (isAlbum) {
+			Album album = albumService.caricaConId(idRaccolta);
+			if (album == null) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "album con id " + idRaccolta + " non trovato");
+			}
+			if (album.getBrani().size() <= 0) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "album con id " + idRaccolta + " vuoto!");
+			}
+		} else {
+			Playlist playlist = playlistService.caricaConId(idRaccolta);
+			if (playlist == null) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+						"playlist con id " + idRaccolta + " non trovata");
+			}
+			if (playlist.getBrani().size() <= 0) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "playlist con id " + idRaccolta + " vuota!");
+			}
+		}
+	}
 	
 }

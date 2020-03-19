@@ -17,6 +17,7 @@ import it.spootify.Spootify.dto.AlbumDTO;
 import it.spootify.Spootify.dto.RiproduzioneDTO;
 import it.spootify.Spootify.model.Album;
 import it.spootify.Spootify.service.AlbumService;
+import it.spootify.Spootify.service.RiproduzioneService;
 
 @RestController
 @RequestMapping(value = "/album")
@@ -26,7 +27,7 @@ public class AlbumController {
 	private AlbumService albumService;
 	
 	@Autowired
-	private RiproduzioneController riproduzioneController;
+	private RiproduzioneService riproduzioneService;
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<AlbumDTO> getAlbum (@PathVariable(value = "id") Long id){
@@ -74,12 +75,12 @@ public class AlbumController {
 	
 	@PostMapping("/{id}/play")
 	public ResponseEntity<RiproduzioneDTO> play(@PathVariable(value = "id") Long id) {
-		return riproduzioneController.playnext(id, true);
+		return riproduzioneService.playnext(id, true);
 	}
 
 	@PostMapping("/{id}/playPrevious")
 	public ResponseEntity<RiproduzioneDTO> playPrevious(@PathVariable(value = "id") Long id) {
-		return riproduzioneController.playprevius(id, true);
+		return riproduzioneService.playprevius(id, true);
 	}
 	
 	
