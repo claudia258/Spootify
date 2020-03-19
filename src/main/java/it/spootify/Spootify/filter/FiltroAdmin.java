@@ -10,12 +10,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import it.spootify.Spootify.model.Sessione;
 import it.spootify.Spootify.model.Utente;
@@ -39,6 +38,9 @@ public class FiltroAdmin implements Filter{
 	@Autowired
 	private SessioneService sessioneService;
 	
+	@Autowired
+ 	private HttpServletResponse httpServletResponse;
+	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
@@ -60,14 +62,17 @@ public class FiltroAdmin implements Filter{
 			utenteInSession = utenteService.caricaUtenteInSessione(codice);
 
 			if (utenteInSession == null) {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Accessono non Autorizzato"); 
+			httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Accesso non autorizzato");
+				return;
+			//	throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Accessono non Autorizzato"); 
 			}
-			System.out.println(utenteInSession.getSessione().getDataScandeza());
 			if(utenteInSession.getSessione().getDataScandeza().before(new Date())) {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Accessono non Autorizzato"); 
+				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sessione utente scaduta");	
+				return;
 			}
 			if(isPathForOnlyAdministrators(urlAttuale) && !utenteInSession.isAdmin()) {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Accessono non Autorizzato"); 
+				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Funzione Solo per gli admin");	
+				return;
 			}
 		}
 		if(utenteInSession != null) {

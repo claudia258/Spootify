@@ -26,6 +26,7 @@ var idRiproduzione = "";
 	
 	doCall('POST', urlPath, parametri, function(risposta){
 		
+		
 		idRiproduzione = risposta.idRiproduzione;
 		buildSongsTable(risposta);
 		
